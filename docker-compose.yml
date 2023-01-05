@@ -1,44 +1,44 @@
-version: "3"
+version: "3.3"
 
 services:
-  database:
-    platform: linux/amd64
+  db:
+    platform: linux/amd64 # 맥
     image: mysql:5.7
     container_name: mydb
-    ports:
-      - "3306:3306"
+    build: ./docker/mysql
+    restart: always
+    tty: true
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: localhost
+      TZ: Asia/Seoul
     expose:
       - "3306"
+    ports:
+      - "3306:3306"
     volumes:
-      - ./data:/var/lib/mysql
-      - ./data:/var/run/mysqld
-#      - 윈도우
-#      - /opt/mydb/mysql_data:/var/lib/mysql
-#      - /tmp/mydb/mysqld:/var/run/mysqld
-    environment:
-      - MYSQL_DATABASE=mydb
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ROOT_HOST=%
-    restart: always
-    command: [ '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+    networks:
+      - local-net
 
-  backend:
-    platform: linux/amd64
-    image: django_david:1.0
-    build: .
-    container_name: david_mydj
-    stdin_open: true
-    tty: true
-    command: python manage.py runserver 0:8000
+  api:
+    links:
+      - db
+    container_name: "api"
+    build: ./docker/api
     ports:
       - "8000:8000"
-    volumes:
-      - .:/django_scalar
-      - ./data:/run/mysqld
-#      - 윈도우 시 추가
-#      - /tmp/mydb/mysqld:/run/mysqld
     expose:
       - "8000"
-    restart: always
+    volumes:
+      - ./code:/usr/src/server
+    networks:
+      - local-net
     depends_on:
-        - database
+      - db
+
+networks:
+  local-net:
+    driver: bridge
