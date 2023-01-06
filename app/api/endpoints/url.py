@@ -1,6 +1,10 @@
-from app.services.user_service import UserService
 
 LOGIN = ''
+
+
+class UserService:
+    def login(self):
+        pass
 
 
 class Url(object):

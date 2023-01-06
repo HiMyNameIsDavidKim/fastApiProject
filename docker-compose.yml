@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 
 services:
   db:
@@ -12,7 +12,6 @@ services:
       MYSQL_DATABASE: mydb
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: localhost
-      TZ: Asia/Seoul
     expose:
       - "3306"
     ports:
@@ -33,7 +32,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./code:/usr/src/server
+      - .:/usr/src/app
     networks:
       - local-net
     depends_on:
