@@ -28,10 +28,10 @@ services:
       - db
     container_name: "api"
     build: ./docker/api
-    ports:
-      - "8000:8000"
     expose:
       - "8000"
+    ports:
+      - "8000:8000"
     volumes:
       - ./code:/usr/src/server
     networks:
