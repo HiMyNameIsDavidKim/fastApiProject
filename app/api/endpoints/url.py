@@ -1,13 +1,12 @@
 
-LOGIN = ''
+LOGIN = ""
 
 
 class UserService:
-    def login(self):
-        pass
+    pass
 
 
-class Url(object):
+class Url:
     def router(self, menu):
         if menu == LOGIN:
             UserService().login()
